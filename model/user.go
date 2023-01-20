@@ -1,6 +1,6 @@
 package models
 
-tyepe Address struct {
+type Address struct {
 State string `json:"state" bson: "state"`
 City string `json:"city" bson: "city"`
 Pincode int `json:"PinCode" bson: "PinCode"`

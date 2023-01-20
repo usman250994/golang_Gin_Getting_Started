@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	models "example.com/usman-apis/model"
-	services "example.com/usman-apis/service"
+	services "example.com/usman-apis/serrvices"
 	"github.com/gin-gonic/gin"
 )
 

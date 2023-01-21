@@ -33,7 +33,7 @@ func init() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("mongo onnection established")
+	fmt.Println("mongo connection established!!!")
 
 	usercollection =  mongoclient.Database("userdb").Collection("users")
 	userservice = services.NewUserService(usercollection,ctx);

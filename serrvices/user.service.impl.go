@@ -14,68 +14,68 @@ type UserServiceImpl struct {
 	ctx            context.Context
 }
 
-func NewUserService(usercollection *mongo.Collection,ctx context.Context) UserService {
-	return &UserServiceImpl {
-		usercollection:usercollection,
-		ctx:ctx,
+func NewUserService(usercollection *mongo.Collection, ctx context.Context) UserService {
+	return &UserServiceImpl{
+		usercollection: usercollection,
+		ctx:            ctx,
 	}
 }
 
 func (u *UserServiceImpl) CreateUser(user *models.User) error {
-	_, err:= u.usercollection.InsertOne(u.ctx,user)
+	_, err := u.usercollection.InsertOne(u.ctx, user)
 	return err
 }
 
-func  (u *UserServiceImpl) GetUser(name *string) (*models.User, error) {
+func (u *UserServiceImpl) GetUser(name *string) (*models.User, error) {
 	var user *models.User
-	query := bson.D{bson.E{Key:"user_name",Value:name}}
-	err:=u.usercollection.FindOne(u.ctx, query).Decode(&user)
+	query := bson.D{bson.E{Key: "user_name", Value: name}}
+	err := u.usercollection.FindOne(u.ctx, query).Decode(&user)
 	return user, err
 }
 
 func (u *UserServiceImpl) GetAll() ([]*models.User, error) {
-	var users []* models.User
-	cursor,err := u.usercollection.Find(u.ctx,bson.D{{}})
-	if err !=nil {
-		return nil,err
+	var users []*models.User
+	cursor, err := u.usercollection.Find(u.ctx, bson.D{{}})
+	if err != nil {
+		return nil, err
 	}
 
 	for cursor.Next(u.ctx) {
 		var user models.User
 		err := cursor.Decode((&user))
-		if err !=nil {
-			return nil,err
+		if err != nil {
+			return nil, err
 		}
 
-	users = append(users,&user)
+		users = append(users, &user)
 	}
 
-	if err:= cursor.Err();  err != nil {
+	if err := cursor.Err(); err != nil {
 		return nil, err
-  	}
+	}
 
-	cursor.Close(u.ctx);
+	cursor.Close(u.ctx)
 
 	if len(users) == 0 {
 		return nil, errors.New("documents not found")
-  	}
+	}
 
-  	return users, nil
+	return users, nil
 }
 
-func(u *UserServiceImpl) UpdateUser(user *models.User) error {
-	filter := bson.D{bson.E{Key:"user_name", Value: user.Name}}
-	update := bson.D{bson.E{Key:"$set",Value: bson.D{
+func (u *UserServiceImpl) UpdateUser(user *models.User) error {
+	filter := bson.D{bson.E{Key: "user_name", Value: user.Name}}
+	update := bson.D{bson.E{Key: "$set", Value: bson.D{
 		bson.E{
-			Key:"user_name",Value: user.Name},
+			Key: "user_name", Value: user.Name},
 		bson.E{
-			Key:"user_Address", Value: user.Address},
+			Key: "user_Address", Value: user.Address},
 		bson.E{
-			Key:"user_Age",Value: user.Age }}}}
+			Key: "user_Age", Value: user.Age}}}}
 
-	result, _ := u.usercollection.UpdateOne(u.ctx,filter,update)
+	result, _ := u.usercollection.UpdateOne(u.ctx, filter, update)
 
-	if result.MatchedCount !=1 {
+	if result.MatchedCount != 1 {
 		return errors.New("no matched document found for update")
 	}
 
@@ -83,10 +83,10 @@ func(u *UserServiceImpl) UpdateUser(user *models.User) error {
 }
 
 func (u *UserServiceImpl) Delete(name *string) error {
-	filter := bson.D{bson.E{Key:"user_name", Value: name}}
-	result, _ := u.usercollection.DeleteOne(u.ctx,filter)
+	filter := bson.D{bson.E{Key: "user_name", Value: name}}
+	result, _ := u.usercollection.DeleteOne(u.ctx, filter)
 
-	if result.DeletedCount !=1 {
+	if result.DeletedCount != 1 {
 		return errors.New("no matched document found for update")
 	}
 	return nil

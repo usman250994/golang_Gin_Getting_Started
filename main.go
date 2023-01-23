@@ -22,7 +22,6 @@ var (
 	err            error
 )
 
-
 func init() {
 	ctx = context.TODO()
 
@@ -35,18 +34,18 @@ func init() {
 
 	fmt.Println("mongo connection established!!!")
 
-	usercollection =  mongoclient.Database("userdb").Collection("users")
-	userservice = services.NewUserService(usercollection,ctx);
+	usercollection = mongoclient.Database("userdb").Collection("users")
+	userservice = services.NewUserService(usercollection, ctx)
 	usercontroller = controllers.New(userservice)
 	server = gin.Default()
 }
 
 func main() {
- defer mongoclient.Disconnect(ctx)
+	defer mongoclient.Disconnect(ctx)
 
- basepath := server.Group("/v1")
+	basepath := server.Group("/v1")
 
- usercontroller.RegisterUserRoutes(basepath)
+	usercontroller.RegisterUserRoutes(basepath)
 
- log.Fatal(server.Run(":9090"))
+	log.Fatal(server.Run(":9090"))
 }
